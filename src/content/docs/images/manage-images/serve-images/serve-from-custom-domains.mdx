@@ -42,16 +42,18 @@ To create a rule:
 2. Select **Rules** > **Transform Rules**.
 3. Select **Create rule**.
 4. Under **When incoming requests match...**, select **Edit expression**.
-5. In the text field, enter `starts_with(http.request.uri.path, "/images")`.
+5. In the text field, choose one of the following options:
+   - To allow requests from any hostname with the path `/images`, use: `starts_with(http.request.uri.path, "/images")`.
+   - To allow requests from a specific hostname like `images.example.com` with the path `/images`, use: `http.host eq "images.example.com" and starts_with(http.request.uri.path, "/images")`.
 6. Under **Path**, select **Rewrite to**.
-7. Select *Dynamic* and enter the following in the text field.
+7. Choose *Dynamic* and enter the following in the text field, replacing `<ACCOUNT_HASH>` with the appropriate value from the Cloudflare Images Dashboard. Ensure that the second argument of the substring function corresponds to the length of the path you specified in step 5.
 
-```txt
-concat(
-  "/cdn-cgi/imagedelivery/<ACCOUNT_HASH>",
-  substring(http.request.uri.path, 7)
-)
-```
+	```txt
+	concat(
+	  "/cdn-cgi/imagedelivery/<ACCOUNT_HASH>/",
+	  substring(http.request.uri.path, 7)
+	)
+	```
 
 8. Select **Deploy** when you are done.
 
